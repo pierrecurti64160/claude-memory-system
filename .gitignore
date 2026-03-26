@@ -1,0 +1,9 @@
+# Donnees personnelles (ne jamais commit)
+*.sync-conflict*
+scripts/telegram-offset
+scripts/last-scan
+scripts/last-librarian
+scripts/cron.log
+
+# Secrets dans les scripts (le token Telegram est dans telegram.sh)
+# IMPORTANT: avant de push, verifier que telegram.sh ne contient pas de vrais tokens

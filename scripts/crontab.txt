@@ -1,0 +1,20 @@
+# Claude Brain — Cerveau autonome de Pierre
+# Timezone: UTC — Pierre est en Europe/Paris (UTC+1 hiver, UTC+2 ete)
+# Mars 2026: CET = UTC+1, donc 8h Paris = 7h UTC, 20h Paris = 19h UTC
+
+# Briefing matinal a 8h Paris (7h UTC) — resume + maj memoire
+0 7 * * * /root/claude-heartbeat/briefing.sh >> /root/claude-heartbeat/cron.log 2>&1
+
+# Heartbeat toutes les 30 min (9h-19h Paris = 8h-18h UTC, lun-ven) — monitoring + maj memoire
+*/30 8-18 * * 1-5 /root/claude-heartbeat/heartbeat.sh >> /root/claude-heartbeat/cron.log 2>&1
+
+# Resume quotidien a 20h Paris (19h UTC) — bilan + librarian
+0 19 * * * /root/claude-heartbeat/summary.sh >> /root/claude-heartbeat/cron.log 2>&1
+
+# Resume hebdomadaire dimanche 21h Paris (20h UTC) — consolidation profonde
+0 20 * * 0 /root/claude-heartbeat/weekly.sh >> /root/claude-heartbeat/cron.log 2>&1
+# Watchdog : alerte si heartbeat down
+*/15 9-19 * * 1-5 /root/claude-heartbeat/watchdog.sh >> /root/claude-heartbeat/cron.log 2>&1
+
+# Librarian : scanne Obsidian et met a jour l identite de Pierre (12h et 18h Paris = 11h et 17h UTC)
+0 11,17 * * * /root/claude-heartbeat/librarian.sh >> /root/claude-heartbeat/cron.log 2>&1

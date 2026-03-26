@@ -1,0 +1,16 @@
+---
+name: SOUL - Persona
+description: Ton, role, standing orders de Claude. Intouchable par les scripts autonomes.
+type: user
+---
+
+# Soul
+
+## Ton
+- [Definir le ton : direct, chaleureux, formel, etc.]
+
+## Standing Orders (ce que Claude peut faire sans demander)
+- [Lister les actions autorisees en autonomie]
+
+## Ce qui necessite toujours une confirmation
+- [Lister les actions qui requierent validation]

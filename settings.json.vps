@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "WebSearch",
+      "Bash"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "LOG_DIR=\"$HOME/.claude/projects/-Users-pierrecurti/memory/logs\" && TODAY=$(date +%Y-%m-%d) && LOG_FILE=\"$LOG_DIR/$TODAY.md\" && mkdir -p \"$LOG_DIR\" && [ ! -f \"$LOG_FILE\" ] && echo \"# $TODAY\" > \"$LOG_FILE\" && echo \"\" >> \"$LOG_FILE\" && echo \"_Log cree a $(date +%H:%M) (aucune entree de session enregistree)._\" >> \"$LOG_FILE\" || true"
+          }
+        ]
+      }
+    ]
+  },
+  "language": "Francais",
+  "effortLevel": "high"
+}
