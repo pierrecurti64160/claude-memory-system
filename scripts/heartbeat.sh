@@ -23,7 +23,6 @@ if [ -f "$LAST_SCAN" ]; then
 else
   MODIFIED=$(find "$PROJECTS_DIR" -type f \( -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.tsx" -o -name "*.mq5" -o -name "*.mqh" \) -mmin -60 2>/dev/null | sed "s|$PROJECTS_DIR/||" | head -20 || true)
 fi
-touch "$LAST_SCAN"
 
 # Git status rapide
 GIT_STATUS=""
@@ -61,6 +60,7 @@ RESULT=$(timeout 180 claude -p "$PROMPT" \
   --allowedTools "Read,Write,Edit" \
   --max-turns 10 \
   2>/dev/null || echo "ERREUR: timeout")
+touch "$LAST_SCAN"
 
 # Bash ecrit le log (fiable a 100%)
 echo "" >> "$LOG_FILE"

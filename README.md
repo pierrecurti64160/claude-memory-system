@@ -103,7 +103,7 @@ crontab scripts/crontab.txt
 
 ### 4. Telegram
 - Creer un bot via @BotFather
-- Editer telegram.sh avec le token et le chat ID
+- Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID environment variables
 - Editer le CLAUDE.md VPS avec les infos Telegram
 
 ## Inspire par

@@ -23,7 +23,6 @@ if [ -d "$VAULT_DIR" ] && [ -f "$LAST_LIBRARIAN" ]; then
 elif [ -d "$VAULT_DIR" ]; then
   NEW_NOTES=$(find "$VAULT_DIR" -name "*.md" ! -path "*/Modèles/*" ! -path "*/4 ARCHIVES/*" -mtime -1 2>/dev/null | sed "s|$VAULT_DIR/||" | head -20 || true)
 fi
-touch "$LAST_LIBRARIAN"
 
 # Si aucune note modifiee, rien a faire
 if [ -z "$NEW_NOTES" ]; then
@@ -92,6 +91,7 @@ RESULT=$(timeout 300 claude -p "$PROMPT" \
   --allowedTools "Read,Write,Edit" \
   --max-turns 15 \
   2>/dev/null || echo "ERREUR: timeout")
+touch "$LAST_LIBRARIAN"
 
 echo "" >> "$LOG_FILE"
 echo "## $NOW [librarian] — $RESULT" >> "$LOG_FILE"

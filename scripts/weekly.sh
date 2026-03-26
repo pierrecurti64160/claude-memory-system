@@ -72,7 +72,7 @@ REGLES :
 timeout 300 claude -p "$PROMPT" \
   --allowedTools "Read,Write,Edit" \
   --max-turns 15 \
-  2>/dev/null || echo "# $WEEK — ERREUR generation resume" > "$SUMMARY_FILE"
+  2>/dev/null || { echo "$(date +%H:%M) ERREUR weekly $WEEK" >> /root/claude-heartbeat/cron.log; exit 1; }
 
 # Sync back to Syncthing
 /root/claude-heartbeat/sync-memory.sh

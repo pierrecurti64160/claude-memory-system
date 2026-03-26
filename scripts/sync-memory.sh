@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Sync bidirectionnel entre claude-memory (writable) et le dossier Syncthing
 WORK="/root/claude-memory"
 SYNC="/root/.claude/projects/-Users-pierrecurti/memory"

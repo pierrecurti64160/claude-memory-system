@@ -6,19 +6,29 @@ Utilise claude -p --continue pour maintenir le contexte entre messages.
 import json, subprocess, time, os, urllib.request, urllib.parse, tempfile, re
 from datetime import datetime
 
-BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN")
-CHAT_ID = int(os.environ.get("TELEGRAM_CHAT_ID", "0"))
+BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+CHAT_ID_RAW = os.environ.get("TELEGRAM_CHAT_ID", "")
+if not BOT_TOKEN or not CHAT_ID_RAW:
+    print("ERREUR: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID env vars required.")
+    raise SystemExit(1)
+CHAT_ID = int(CHAT_ID_RAW)
 API = f"https://api.telegram.org/bot{BOT_TOKEN}"
 MEMORY_DIR = "/root/claude-memory"
 OFFSET_FILE = "/root/claude-heartbeat/telegram-offset"
 PROJECTS_DIR = "/root/projects"
 SESSION_FILE = "/root/claude-heartbeat/telegram-session-id"
 
-# Whisper
-import whisper
-print("Loading Whisper...")
-whisper_model = whisper.load_model("base")
-print("Whisper ready.")
+# Whisper (optional)
+WHISPER_AVAILABLE = False
+whisper_model = None
+try:
+    import whisper
+    print("Loading Whisper...")
+    whisper_model = whisper.load_model("base")
+    WHISPER_AVAILABLE = True
+    print("Whisper ready.")
+except ImportError:
+    print("Whisper not installed — voice messages disabled.")
 
 def api_call(method, data=None):
     url = f"{API}/{method}"
@@ -52,17 +62,21 @@ def download_file(file_id):
     return tmp.name
 
 def transcribe_audio(ogg_path):
+    wav_path = ogg_path.replace(".ogg", ".wav")
     try:
-        wav_path = ogg_path.replace(".ogg", ".wav")
         subprocess.run(["ffmpeg", "-y", "-i", ogg_path, wav_path],
                       capture_output=True, timeout=30)
         result = whisper_model.transcribe(wav_path, language="fr")
-        os.unlink(ogg_path)
-        os.unlink(wav_path)
         return result["text"]
     except Exception as e:
         print(f"Transcription error: {e}")
         return None
+    finally:
+        for f in (ogg_path, wav_path):
+            try:
+                os.unlink(f)
+            except OSError:
+                pass
 
 def get_offset():
     try:
@@ -175,7 +189,7 @@ while True:
             voice = msg.get("voice")
             audio = msg.get("audio")
             voice_obj = voice or audio
-            if voice_obj and not text:
+            if voice_obj and not text and WHISPER_AVAILABLE:
                 send_message("Transcription...")
                 ogg_file = download_file(voice_obj["file_id"])
                 if ogg_file:
@@ -201,7 +215,14 @@ while True:
             print(f"[{'continue' if has_session else 'new'}] {text[:80]}")
             send_message("...")
 
-            response = ask_claude(text, is_new_session=not has_session)
+            session_id = None
+            if has_session:
+                try:
+                    with open(SESSION_FILE) as f:
+                        session_id = f.read().strip() or None
+                except (FileNotFoundError, ValueError):
+                    session_id = None
+            response = ask_claude(text, session_id=session_id)
             has_session = True
 
             print(f"Reponse ({len(response)} chars)")

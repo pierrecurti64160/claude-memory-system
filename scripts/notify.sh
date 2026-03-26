@@ -9,9 +9,9 @@ TYPE="${2:-heartbeat}"
 # Extraire le dernier bloc summary (tout apres la derniere ligne [summary])
 extract_last_summary() {
   local file="$1"
-  python3 -c "
-import sys
-lines = open('$file').readlines()
+  FILE="$file" python3 -c "
+import os, sys
+lines = open(os.environ['FILE']).readlines()
 last_idx = -1
 for i, line in enumerate(lines):
     if '[summary]' in line:
@@ -29,12 +29,13 @@ if last_idx >= 0:
 # Extraire la derniere entree du log a l heure NOW
 extract_last_entry() {
   local file="$1"
-  python3 -c "
-import sys
-lines = open('$file').readlines()
+  FILE="$file" NOW="$NOW" python3 -c "
+import os, sys
+lines = open(os.environ['FILE']).readlines()
+now = os.environ['NOW']
 last_idx = -1
 for i, line in enumerate(lines):
-    if line.startswith('## $NOW'):
+    if line.startswith('## ' + now):
         last_idx = i
 if last_idx >= 0:
     block = []
