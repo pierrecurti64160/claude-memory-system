@@ -14,6 +14,9 @@ Les fichiers memoire ont un frontmatter avec des tags de certitude et de source 
 - `certainty`: fixed (immuable) | stable (dure des mois) | volatile (change en semaines) | speculative (hypothese)
 - `source`: declared (Pierre l'a dit) | inferred (deduit du contexte)
 - `last_confirmed`: date de derniere confirmation
+- volatile non confirme depuis 90 jours → descend a speculative
+- speculative non confirme depuis 60 jours → archive dans memory/archives/
+- fixed et declared/stable ne subissent pas de decay
 
 Regles :
 - **declared > inferred** — si deux infos se contredisent, celle que Pierre a dite gagne

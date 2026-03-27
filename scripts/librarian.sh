@@ -99,7 +99,9 @@ RESULT=$(timeout 300 claude -p "$PROMPT" \
   --allowedTools "Read,Write,Edit" \
   --max-turns 15 \
   2>/dev/null || echo "ERREUR: timeout")
-touch "$LAST_LIBRARIAN"
+if [[ "$RESULT" != ERREUR* ]]; then
+  touch "$LAST_LIBRARIAN"
+fi
 
 echo "" >> "$LOG_FILE"
 echo "## $NOW [librarian] — $RESULT" >> "$LOG_FILE"

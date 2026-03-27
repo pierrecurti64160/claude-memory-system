@@ -31,6 +31,9 @@ $COMMITS"
 done
 
 MODIFIED_FILES=$(find "$PROJECTS_DIR" -type f \( -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.tsx" -o -name "*.mq5" -o -name "*.mqh" -o -name "*.md" \) -newer "$YESTERDAY_LOG" 2>/dev/null | sed "s|$PROJECTS_DIR/||" | head -30 || true)
+if [ -z "$MODIFIED_FILES" ] && [ ! -f "$LOG_DIR/$(date -d 'yesterday' +%Y-%m-%d).md" ]; then
+  MODIFIED_FILES=$(find "$PROJECTS_DIR" -type f \( -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.tsx" -o -name "*.mq5" -o -name "*.mqh" -o -name "*.md" \) -mtime -1 2>/dev/null | sed "s|$PROJECTS_DIR/||" | head -30 || true)
+fi
 
 # Activites post-resume d'hier (entre le summary d'hier et minuit)
 LATE_ENTRIES=""
@@ -74,9 +77,10 @@ Tu dois faire 4 choses (utilise les tools Edit et Write) :
    - Cree des fichiers feedback_*.md ou reference_*.md dans $MEMORY_DIR
    - Ajoute-les a $MEMORY_DIR/MEMORY.md
    - TOUT nouveau fichier DOIT avoir dans le frontmatter :
-     certainty: stable | volatile | speculative
+     certainty: fixed | stable | volatile | speculative
      source: declared (Pierre l a dit) | inferred (deduit du contexte)
      last_confirmed: la date du jour
+   - Seuls les regles immuables declarees par Pierre meritent fixed — en cas de doute, utilise stable.
    - Si Pierre a DIT quelque chose → source: declared. Si tu le deduis → source: inferred.
    - En cas de conflit declared vs inferred → declared gagne.
    - Quand tu mets a jour un fichier existant, mets aussi a jour last_confirmed dans le frontmatter.
