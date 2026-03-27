@@ -79,11 +79,19 @@ TU DOIS FAIRE EXACTEMENT CECI :
 
 5. RESUME : Ecris en une phrase ce que tu as appris et mis a jour.
 
-REGLES :
-- SOUL.md intouchable
+REGLES LMP (Living Memory Protocol) :
+- SOUL.md intouchable (certainty: fixed)
 - Ne cree des memoires que pour des infos durables (30+ jours)
 - Qualite > quantite
 - Si les notes ne contiennent rien de nouveau sur Pierre, ne modifie rien
+- TOUT nouveau fichier memoire DOIT avoir ce frontmatter :
+  certainty: fixed | stable | volatile | speculative
+  source: declared (Pierre l a dit) | inferred (deduit du contexte)
+  last_confirmed: YYYY-MM-DD
+- Si Pierre a DIT quelque chose dans une note → source: declared
+- Si tu le DEDUIS d une note → source: inferred
+- En cas de conflit entre declared et inferred → declared gagne toujours
+- Quand tu mets a jour un fichier existant, mets aussi a jour last_confirmed
 
 Reponds avec le resume."
 

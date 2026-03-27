@@ -66,7 +66,7 @@ $(cat "$MEMORY_DIR/primer.md" 2>/dev/null)
 Tu dois faire 2 choses :
 
 1. BRIEFING : Ecris un briefing structure :
-- Hier : resume activite
+- Hier : resume activite (ATTENTION : verifie s il y a des entrees dans le log d hier APRES le [summary] de 19h/20h — si oui, signale-les en premier car elles n ont pas ete couvertes par le resume)
 - Par projet : statut
 - Taches ouvertes
 - Priorite du jour

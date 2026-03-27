@@ -8,6 +8,19 @@ Au debut de chaque session, charger dans cet ordre :
 
 Le dossier memory/ est relatif au projet courant. Claude Code le resout automatiquement.
 
+## Living Memory Protocol (LMP)
+
+Les fichiers memoire ont un frontmatter avec des tags de certitude et de source :
+- `certainty`: fixed (immuable) | stable (dure des mois) | volatile (change en semaines) | speculative (hypothese)
+- `source`: declared (Pierre l'a dit) | inferred (deduit du contexte)
+- `last_confirmed`: date de derniere confirmation
+
+Regles :
+- **declared > inferred** — si deux infos se contredisent, celle que Pierre a dite gagne
+- **fixed ne decay jamais** — SOUL.md, feedbacks explicites
+- Quand Pierre dit quelque chose qui contredit une info en memoire, mettre a jour le fichier ET son last_confirmed
+- Les fichiers archives sont dans memory/archives/ — ne pas les charger sauf si le contexte l'exige
+
 ## Reecriture du primer
 
 Quand Pierre dit "c est bon", "tache terminee", "on passe a autre chose", ou toute indication qu une tache est terminee :
