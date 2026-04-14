@@ -1,0 +1,16 @@
+[Unit]
+Description=Chief of Staff — Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /root/claude-heartbeat/telegram-bot.py
+Restart=always
+RestartSec=10
+User=root
+WorkingDirectory=/root/claude-heartbeat
+StandardOutput=append:/root/claude-heartbeat/telegram-bot.log
+StandardError=append:/root/claude-heartbeat/telegram-bot.log
+
+[Install]
+WantedBy=multi-user.target

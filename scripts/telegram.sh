@@ -1,7 +1,7 @@
 #!/bin/bash
 # Telegram bot utilities
-BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-YOUR_BOT_TOKEN}"
-CHAT_ID="${TELEGRAM_CHAT_ID:-YOUR_CHAT_ID}"
+BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-8647578786:AAHf8sknMnDr0dAWWAk0dJLCrHZot3rRQ-U}"
+CHAT_ID="${TELEGRAM_CHAT_ID:-2002390235}"
 API="https://api.telegram.org/bot$BOT_TOKEN"
 
 send_message() {

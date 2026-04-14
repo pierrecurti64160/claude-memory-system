@@ -1,0 +1,16 @@
+[Unit]
+Description=Chief of Staff — Vault Watcher
+After=network.target syncthing.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /root/claude-heartbeat/watcher.py
+Restart=always
+RestartSec=30
+User=root
+WorkingDirectory=/root/claude-heartbeat
+StandardOutput=append:/root/claude-heartbeat/watcher.log
+StandardError=append:/root/claude-heartbeat/watcher.log
+
+[Install]
+WantedBy=multi-user.target
