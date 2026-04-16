@@ -126,7 +126,9 @@ $(cat "$MEMORY_DIR/MEMORY.md" 2>/dev/null)
 
 === INSTRUCTIONS ===
 
-1. SCORING : Lis le Priority Engine ci-dessus. Score chaque tache en attente (primer, logs, reunions). Utilise les criteres du modele.
+0. SNOOZE : Lis la section \"Snoozed\" du primer. Les taches snoozees sont EXCLUES du scoring jusqu'a leur date de fin. Ne les fais PAS apparaitre dans les priorites tant que la date de snooze n'est pas atteinte. Exemple : si le primer dit \"Robot Trading snoozed jusqu'au 17/04\", et qu'on est le 15/04, ne pas proposer Robot Trading. Le 17/04 et apres, elle redevient eligible au scoring.
+
+1. SCORING : Lis le Priority Engine ci-dessus. Score chaque tache en attente (primer, logs, reunions) SAUF les snoozees. Utilise les criteres du modele.
 
 2. TOP 3 : Produis EXACTEMENT 3 priorites, dans l'ordre de score decroissant. Pour chaque :
    - Numero et titre court

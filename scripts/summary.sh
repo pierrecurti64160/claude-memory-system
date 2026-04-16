@@ -102,7 +102,11 @@ ${IGNORED_TASKS:-Aucune}
 === DEBRIEF DE PIERRE (questions posees a 18h + reponses vocales/textes) ===
 ${DEBRIEF_CONTENT:-Pas de debrief aujourd hui}
 
-IMPORTANT : Les reponses du debrief sont la VERITE TERRAIN. Si tes deductions du log/git/vault contredisent ce que Pierre a dit dans son debrief, c'est Pierre qui a raison. Mets a jour les projets et le primer en consequence.
+REGLES DEBRIEF :
+1. Les reponses de Pierre sont la VERITE TERRAIN. Si tes deductions log/git/vault contredisent ce qu'il a dit, c'est Pierre qui a raison. Mets a jour memoire et projets en consequence.
+2. Pour les questions du debrief que Pierre a IGNOREES (pas de reponse correspondante dans ses messages) : considere que Pierre n'avait PAS d'info nouvelle a donner. Ne spe cule PAS sur ces points. Garde l'etat connu de la memoire actuelle.
+3. Si Pierre a repondu en bloc sans suivre la numerotation des questions, fais correspondre intelligemment ses propos aux sujets evoques. En cas de doute, marque le sujet comme \"non clarifie par le debrief\" plutot que de speculer.
+4. Liste explicitement dans le resume du jour les sujets QUI NE SONT PAS CLARIFIES par le debrief, pour que demain le briefing les reprenne.
 
 === MEMOIRE ===
 $(cat "$MEMORY_DIR/MEMORY.md" 2>/dev/null)

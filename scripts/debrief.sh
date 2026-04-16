@@ -63,7 +63,7 @@ $PROJECT_NAME: $COMMITS"
 
   PROMPT="Tu es le Chief of Staff de Pierre. Il est 18h, fin de journee.
 
-Ton job : identifier les TROUS NOIRS — ce que le systeme ne sait PAS encore — et poser 3 a 5 questions ciblees a Pierre. Il repondra en vocal.
+Ton job : identifier TOUS les TROUS NOIRS — ce que le systeme ne sait PAS — et poser autant de questions ciblees que necessaire. Pierre repondra en vocal a celles qui ont une reponse, et ignorera celles qui n'en ont pas. Pas besoin d'auto-censurer, pose tout ce dont tu as besoin pour avoir une vision complete.
 
 === DAILY NOTE DU MATIN ===
 $DAILY_NOTE_CONTENT
@@ -77,28 +77,49 @@ $TODAY_LOG
 === PRIMER ===
 $(cat $MEMORY_DIR/primer.md 2>/dev/null)
 
-Identifie :
-1. Les priorites du matin non cochees — est-ce fait/pas fait/autre ?
-2. Les projets qui ont bouge (commits) sans explication dans les logs
-3. Les promesses attendues (ex: Celia envoie contenu, RDV a caler)
-4. Les gens dont Pierre attend une reponse
-5. Les deadlines qui approchent (robot FTMO, deplacements, etc.)
+=== PROJETS ===
+$(for f in "$MEMORY_DIR"/project_*.md; do echo \"--- \$(basename \$f) ---\"; head -10 \"\$f\" 2>/dev/null; done | head -100)
 
-Produis UN message Telegram avec 3 a 5 questions numerotees. Ton : direct, amical, pas de blabla.
+Categories de questions a couvrir (toutes celles qui s'appliquent, pas de limite) :
+
+1. **Priorites du matin** : pour chaque priorite non cochee, demande l'etat (fait/pas fait/partiel/depriorise)
+2. **Projets qui ont bouge** : commits, modifs sans explication dans les logs — qu'est-ce qui s'est passe ?
+3. **Promesses attendues** : Celia, Maxime, Theo, Nicolas, Sam, etc. — du nouveau ?
+4. **Reponses en attente** : gens dont Pierre attend une reponse — relancer ou patienter ?
+5. **Deadlines** : robot FTMO, deplacements, RDV planifies — c'est quoi le statut ?
+6. **Reunions** : Pierre a-t-il eu des appels/RDV non logges ? Avec qui, decisions ?
+7. **Decisions strategiques** : nouvelles idees, pivots, abandons de projets ?
+8. **Sante du business** : factures envoyees/recues, paiements, MRR ?
+9. **Communication** : echanges importants iMessage/WhatsApp/Insta non captures ?
+10. **Energie/forme** : journee productive ou pas, fatigue, blocages mentaux ?
+11. **Demain** : anything specifique a preparer pour demain ?
+12. **Autres** : tout ce qui te parait flou dans les logs/git/vault
+
+Produis UN message Telegram avec toutes les questions necessaires, numerotees, groupees par theme si pertinent.
+
 Format :
-Debrief du jour. Reponds en vocal quand tu as 2 min, une question a la fois ou tout en bloc.
+Debrief du jour. Reponds en vocal aux questions qui ont une reponse, ignore celles qui n'en ont pas. Tape fin quand tu as termine.
 
-1. [question courte et precise]
+PRIORITES DU MATIN
+1. [question]
 2. [question]
+
+PROJETS
 3. [question]
+...
 
-Quand t'as fini, tape fin.
+QUOTIDIEN
+N. [question]
 
-IMPORTANT : la reponse que tu produis SERA envoyee telle quelle sur Telegram. Pas de markdown, pas de backticks."
+IMPORTANT :
+- La reponse SERA envoyee telle quelle sur Telegram. Pas de markdown, pas de backticks.
+- Sois exhaustif mais concis : une ligne par question.
+- Pas de questions creuses ('comment ca va') — uniquement ce dont tu as besoin pour mettre a jour la memoire.
+- Si une question peut etre repondue par oui/non, formule-la pour avoir le contexte ('avec qui', 'pour quand', etc.)"
 
-  QUESTIONS=$(timeout 180 claude -p "$PROMPT" \
+  QUESTIONS=$(timeout 300 claude -p "$PROMPT" \
     --allowedTools "Read" \
-    --max-turns 5 \
+    --max-turns 8 \
     2>/dev/null || echo "ERREUR: timeout lors de la generation")
 
   # Creer le fichier debrief avec les questions

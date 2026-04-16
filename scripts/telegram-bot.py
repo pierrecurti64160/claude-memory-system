@@ -22,7 +22,7 @@ CHAT_ID = 2002390235
 API = f"https://api.telegram.org/bot{BOT_TOKEN}"
 MEMORY_DIR = "/root/claude-memory"
 OFFSET_FILE = "/root/claude-heartbeat/telegram-offset"
-PROJECTS_DIR = "/root/projects"
+PROJECTS_DIR = "/root/claude-heartbeat"  # cwd pour Claude CLI (fallback : claude-heartbeat existe toujours)
 SESSION_FILE = "/root/claude-heartbeat/telegram-session-id"
 REFRESH_SCRIPT = "/root/claude-heartbeat/refresh-auth.sh"
 VAULT_DIR = "/root/obsidian-vault"
@@ -30,10 +30,17 @@ DAILY_DIR = f"{VAULT_DIR}/5 TOOLS/Notes quotidienne"
 PRIORITY_ENGINE = "/root/claude-heartbeat/priority-engine.md"
 DEBRIEF_DIR = "/root/claude-heartbeat/debriefs"
 
-# Whisper
-import whisper
-print("Loading Whisper...")
-whisper_model = whisper.load_model("base")
+# Whisper — faster-whisper large-v3-turbo int8 (meme config que Video Pierre)
+# Utilise le modele deja telecharge dans le cache HF (pas de re-download)
+from faster_whisper import WhisperModel
+print("Loading faster-whisper large-v3-turbo (cached)...")
+whisper_model = WhisperModel(
+    "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+    device="cpu",
+    compute_type="int8",
+    cpu_threads=4,
+    num_workers=1,
+)
 print("Whisper ready.")
 
 # Compteur d'echecs consecutifs Claude CLI
@@ -81,10 +88,16 @@ def transcribe_audio(ogg_path):
         wav_path = ogg_path.replace(".ogg", ".wav")
         subprocess.run(["ffmpeg", "-y", "-i", ogg_path, wav_path],
                       capture_output=True, timeout=30)
-        result = whisper_model.transcribe(wav_path, language="fr")
+        segments_iter, info = whisper_model.transcribe(
+            wav_path,
+            language="fr",
+            vad_filter=True,
+            beam_size=5,
+        )
+        text = " ".join(seg.text.strip() for seg in segments_iter)
         os.unlink(ogg_path)
         os.unlink(wav_path)
-        return result["text"]
+        return text
     except Exception as e:
         print(f"Transcription error: {e}")
         return None
@@ -546,7 +559,7 @@ def ask_claude(message, session_id=None, retry=False):
         "--model", "sonnet",
         "--output-format", "text",
         "--allowedTools", "Read,Edit",
-        "--max-turns", "8"
+        "--max-turns", "15"
     ]
 
     if session_id:
@@ -556,7 +569,7 @@ def ask_claude(message, session_id=None, retry=False):
             "--model", "sonnet",
             "--output-format", "text",
             "--allowedTools", "Read,Edit,Bash",
-            "--max-turns", "8"
+            "--max-turns", "15"
         ]
 
     try:
